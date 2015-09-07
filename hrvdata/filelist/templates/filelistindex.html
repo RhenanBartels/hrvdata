@@ -1,0 +1,26 @@
+{% extends "site_base.html" %}
+
+{%load i18n %}
+{%load staticfiles %}
+
+{%block body_base %}
+{% include "main.html" %}
+{% url "analysis_page" as analysis_page %}
+<link href="{{ STATIC_URL }}css/filelistcustom.css" rel="stylesheet">
+<center>
+<ul>
+    {% for rri in data %}
+    <!--<li id={{ rri.filename }}> <a href="/{{ analysis_page }}/{{ rri.filename}}">-->
+        <li id={{ rri.filename }} class="colordvcon"> <a href="/analysis/{{ rri.filename}}">
+            <img src="{% static "images/document9.png" %}"/> {{ rri.filename }}</a></li>
+    {% endfor %}
+</ul>
+</center>
+</body>
+</html>
+
+<script type="text/javascript" src="{{ STATIC_URL }}js/jquery-1.11.3.min.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}js/filelistcustom.js"></script>
+<!-- Colocar todo esse codigo num arquivo separado e ja plotar os resultados
+com AJax -->
+{% endblock %}

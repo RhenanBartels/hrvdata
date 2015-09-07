@@ -1,0 +1,107 @@
+{% extends "site_base.html" %}
+
+{%load i18n %}
+{%load staticfiles %}
+
+{%block body_base %}
+{% include "main.html" %}
+        <div id="title" style="text-align: center"><h2>Tachogram</h2></div>
+        <div id="rri"></div>
+          <hr>
+          <h2 style="text-align:center" class="sub-header">Results</h2>
+          <div class="table-responsive">
+            <table class="table table-striped">
+              <thead>
+                <tr>
+                  <th colspan="2" style="text-align:center">Time-Domain</th>
+                  <th colspan="2" style="text-align:center">Frequency-Domain</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>RMSSD (ms)</td>
+                  <td>{{ rmssd }}</td>
+                  <td>Total Power (ms&sup2)</td>
+                  <td>{{ totalpower }}</td>
+                </tr>
+                <tr>
+                  <td>SDNN (ms)</td>
+                  <td>{{ sdnn }}</td>
+                  <td>VLF (ms&sup2)</td>
+                  <td>{{ vlf }}</td>
+                </tr>
+                <tr>
+                  <td>pNN50 (%)</td>
+                  <td>{{ pnn50 }}</td>
+                  <td>LF (ms&sup2)</td>
+                  <td>{{ lf }}</td>
+                </tr>
+                <tr>
+                  <td>mean RRi (ms)</td>
+                  <td>{{ mrri }}</td>
+                  <td>HF (ms&sup2)</td>
+                  <td>{{ hf }}</td>
+                </tr>
+                <tr>
+                  <td>mean HR (bpm)</td>
+                  <td>{{ mhr }}</td>
+                  <td>LF/HF</td>
+                  <td>{{ lfhf }}</td>
+                </tr>
+                <tr>
+                  <td>SDSD (ms)</td>
+                  <td>{{ sdsd }}</td>
+                  <td>LFn.u</td>
+                  <td>{{ lfnu }}</td>
+                </tr>
+                <tr>
+                  <td>SD1 (ms)</td>
+                  <td>{{ sdsd }}</td>
+                  <td>HFn.u</td>
+                  <td>{{ hfnu }}</td>
+                </tr>
+                <tr>
+                  <td>SD2 (ms)</td>
+                  <td>{{ sdsd }}</td>
+                  <td>-</td>
+                  <td></td>
+                </tr>
+                <tr>
+                </tr>
+              </tbody>
+            </table>
+        </div>
+        <h2> Power Spectrum Density </h2>
+        <div id="psd"></div>
+        <h2> Time Varying </h2>
+<div class="bs-example">
+   <div class="dropdown">
+        <a id="mainindexdropdown" data-target="#" href="" data-toggle="dropdown"
+           class="dropdown-toggle">Index <b class="caret"></b></a>
+        <ul class="dropdown-menu">
+            <li id="rmssdi_li" class="chooseindex"><a>RMSSDi</a></li>
+            <li id="sdnni_li" class="chooseindex"><a>SDNNi</a></li>
+            <li id="pnn50i_li" class="chooseindex"><a>pNN50i</a></li>
+            <li id="mrrii_li" class="chooseindex"><a>Mean RRii</a></li>
+            <li id="mhri_li" class="chooseindex"><a>Mean HRi</a></li>
+        </ul>
+    </div>
+</div>
+        <div id="time-varying"></div>
+<!-- Ajax ou AngularJS na geracao dos relatorios -->
+<a href="/export/{{ filename }}">Export Results</a> |
+          <a href="http://www.bootply.com/128936">Generate Report</a>
+
+</body>
+</html>
+<link rel="stylesheet", href="{{ STATIC_URL }}css/graphics.css">
+
+<script type="text/javascript" src="{{ STATIC_URL }}js/jquery-1.11.3.min.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}js/jquery.flot.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}js/analysiscustom.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}js/jquery.flot.navigate.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}js/graphics.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}js/tvdropdownmenu.js"></script>
+<!-- Colocar todo esse codigo num arquivo separado e ja plotar os resultados
+com AJax -->
+{% endblock %}

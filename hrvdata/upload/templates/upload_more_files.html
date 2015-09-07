@@ -1,0 +1,17 @@
+{% extends "site_base.html" %}
+
+{%load i18n %}
+{%load staticfiles %}
+
+{%block body_base %}
+{% include "main.html" %}
+    <h2> You can only upload 5 files. If you want to upload more consider
+        get the Premium account or deleting other files </h2>
+</body>
+</html>
+
+<script type="text/javascript" src="{{ STATIC_URL }}js/jquery-1.11.3.min.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}js/uploadcustom.js"></script>
+<!-- Colocar todo esse codigo num arquivo separado e ja plotar os resultados
+com AJax -->
+{% endblock %}

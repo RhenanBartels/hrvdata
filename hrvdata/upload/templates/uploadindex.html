@@ -1,0 +1,21 @@
+{% extends "site_base.html" %}
+
+{%load i18n %}
+{%load staticfiles %}
+
+{%block body_base %}
+{% include "main.html" %}
+        {% url "upload_page" as upload_page %}
+        <form enctype="multipart/form-data" method="post" action={{ upload_page }}>
+            {% csrf_token %}
+            {{ fileform.as_p }}
+            <input type="submit" value="Upload">
+        </form>
+</body>
+</html>
+
+<script type="text/javascript" src="{{ STATIC_URL }}js/jquery-1.11.3.min.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}js/uploadcustom.js"></script>
+<!-- Colocar todo esse codigo num arquivo separado e ja plotar os resultados
+com AJax -->
+{% endblock %}

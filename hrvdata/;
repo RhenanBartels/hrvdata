@@ -1,0 +1,12 @@
+import json
+
+from django.shortcuts import render
+from django.http import HttpResponse
+
+def index(request):
+    #    fake_data = zip(range(10), range(20, 30))
+    fake_data = zip(range(10), range(20, 30))
+    context = {'data': fake_data, 'signal': fake_data}
+    print context
+
+    return render(request, "index.html", context)

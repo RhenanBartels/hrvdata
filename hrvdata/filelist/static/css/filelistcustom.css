@@ -1,0 +1,10 @@
+.colordvcon {
+    display:inline-block;
+    margin: 3px 1px;
+  text-align: center;
+  font-family:Courier,monospace;
+  padding:6px;
+  width: 132px;
+  -webkit-border-radius: 5px;
+border-radius: 5px;
+}
