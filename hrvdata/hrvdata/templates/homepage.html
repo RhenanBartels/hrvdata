@@ -73,7 +73,8 @@
             </p>
         </div>
         </section>
-{% else %}
-    {% include "main.html" %}
+{% else %} <!-- Temporary until discover how to this in the view -->
+    {% url "filelist_page" as filelist_page %}
+    <meta http-equiv="REFRESH" content="0;url={{ filelist_page }}">
 {% endif %}
 {% endblock %}

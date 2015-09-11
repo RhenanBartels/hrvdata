@@ -8,3 +8,21 @@
   -webkit-border-radius: 5px;
 border-radius: 5px;
 }
+
+#img {
+    display: inline-block;
+    float: right;
+}
+
+#img img {
+    max-width: 200px;
+}
+
+.inline{
+    display:inline-block;
+   float: center;
+}
+
+#adddoc {
+    padding-bottom: 8px;
+}

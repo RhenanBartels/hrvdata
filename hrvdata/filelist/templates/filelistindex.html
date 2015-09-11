@@ -6,16 +6,35 @@
 {%block body_base %}
 {% include "main.html" %}
 {% url "analysis_page" as analysis_page %}
+{% url "upload_page" as upload_page %}
 <link href="{{ STATIC_URL }}css/filelistcustom.css" rel="stylesheet">
 <center>
+{% if data %}
 <ul>
+    <li class="colordvcon"><a href={{ upload_page }}><div id="img"><img id="adddoc" src="
+            {% static "images/adddocument.png" %}"></div></a></li>
     {% for rri in data %}
     <!--<li id={{ rri.filename }}> <a href="/{{ analysis_page }}/{{ rri.filename}}">-->
         <li id={{ rri.filename }} class="colordvcon"> <a href="/analysis/{{ rri.filename}}">
-            <img src="{% static "images/document9.png" %}"/> {{ rri.filename }}</a></li>
+        <div id="img">
+               <img src="{% static "images/document9.png" %}"/> {{ rri.filename }}</a>
+        </div>
+           <div class="inline">
+               <img id={{ rri.filename }} class="del_btn" src="{% static "images/delete96.png" %}"/> </a>
+            </div>
+           <div class="inline">
+               <img src="{% static "images/social24.png" %}"/> </a>
+           </div>
+
+        </li>
     {% endfor %}
 </ul>
 </center>
+{% else %}
+    <h3> You do not have any files yet :(</h3>
+    <!-- <img src="{% static "images/empty_box.png" %}"/> -->
+    <h4>Upload one <a href={{ upload_page }}>here</a></h4>
+{% endif %}
 </body>
 </html>
 

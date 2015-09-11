@@ -8,7 +8,7 @@ from django.http import HttpResponse
 from upload.models import Tachogram
 
 from hrvtools.hrv import TimeDomain, TimeVarying, FrequencyDomain
-
+#TODO: use new hrv module intalled with pip. Remove hrvtools library
 def index(request, filename):
     user = request.user
     rri_file = Tachogram.objects.get(owner=user, filename=filename)
