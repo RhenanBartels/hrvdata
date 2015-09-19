@@ -48,6 +48,25 @@ $(document).ready(function() {
         $.plot(("#rri"), [data.rri]);
         $.plot(("#time-varying"), [data.rmssdi], optionstv);
         $.plot(("#psd"), [data.vlfpsd, data.lfpsd, data.hfpsd], optionspsd);
+
+        //TODO: Create a function to make this plot and avoid repetion (DRY)
+        window.onresize = function(event) {
+            $.plot(("#rri"), [data.rri]);
+            $.plot(("#time-varying"), [data.rmssdi], optionstv);
+            $.plot(("#psd"), [data.vlfpsd, data.lfpsd, data.hfpsd], optionspsd);
+            var xaxisLabel = $("<div class='axisLabel xaxisLabel'></div>").text("Time (s)").appendTo($('#rri'));
+
+            var yaxisLabel = $("<div class='axisLabel yaxisLabel'></div>").text("RRi (ms)").appendTo($('#rri'));
+            yaxisLabel.css("margin-top", yaxisLabel.width() / 2 - 20);
+            var xaxisLabel = $("<div class='axisLabel xaxisLabel'></div>").text("Frequency (Hz)").appendTo($('#psd'));
+
+            var yaxisLabel = $("<div class='axisLabel yaxisLabel'></div>").text("PSD (ms/Hz)").appendTo($('#psd'));
+            yaxisLabel.css("margin-top", yaxisLabel.width() / 2 - 20);
+            var xaxisLabel = $("<div class='axisLabel xaxisLabel'></div>").text("Time (s)").appendTo($('#time-varying'));
+
+            var yaxisLabel = $("<div class='axisLabel yaxisLabel'></div>").text("RMSSD (ms)").appendTo($('#time-varying'));
+            yaxisLabel.css("margin-top", yaxisLabel.width() / 2 - 20);
+        }
      //   $.plot(("#psd"), [data.psd.slice(0, 11), data.psd.slice(10, 20), data.psd.slice(19)], optionspsd);
     var xaxisLabel = $("<div class='axisLabel xaxisLabel'></div>").text("Time (s)").appendTo($('#rri'));
 
