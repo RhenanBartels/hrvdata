@@ -24,7 +24,7 @@ $(document).ready(function() {
 
     function plot(data){
         var optionspsd = {
-            colors:["#ff073a"],
+            colors:["#0097ff","#81d8d0", "#b0e0e6"],
             lines:{
                 show:true,
                 fill:true,
@@ -47,8 +47,8 @@ $(document).ready(function() {
         };
         $.plot(("#rri"), [data.rri]);
         $.plot(("#time-varying"), [data.rmssdi], optionstv);
-        //$.plot(("#psd"), [data.psd, data.vlfpsd, data.lfpsd, data.hfpsd], optionspsd);
-        $.plot(("#psd"), [data.psd], optionspsd);
+        $.plot(("#psd"), [data.vlfpsd, data.lfpsd, data.hfpsd], optionspsd);
+     //   $.plot(("#psd"), [data.psd.slice(0, 11), data.psd.slice(10, 20), data.psd.slice(19)], optionspsd);
     var xaxisLabel = $("<div class='axisLabel xaxisLabel'></div>").text("Time (s)").appendTo($('#rri'));
 
     var yaxisLabel = $("<div class='axisLabel yaxisLabel'></div>").text("RRi (ms)").appendTo($('#rri'));

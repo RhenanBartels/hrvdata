@@ -90,18 +90,19 @@ def split_psd_classes(freq_domain):
     vlf_range = freq_domain.vlf_range
     lf_range = freq_domain.lf_range
     hf_range = freq_domain.hf_range
-    fxx_vlf = fxx[np.where(np.logical_and(fxx >= vlf_range[0],
+    freq_res = fxx[1] - fxx[0]
+    fxx_vlf = fxx[np.where(np.logical_and(fxx >= (vlf_range[0] - freq_res),
         fxx <= vlf_range[1]))]
-    pxx_vlf = pxx[np.where(np.logical_and(fxx >= vlf_range[0],
+    pxx_vlf = pxx[np.where(np.logical_and(fxx >= (vlf_range[0] - freq_res),
         fxx <= vlf_range[1]))]
     fxx_lf = fxx[np.where(np.logical_and(fxx >= lf_range[0],
         fxx <= lf_range[1]))]
     pxx_lf = pxx[np.where(np.logical_and(fxx >= lf_range[0],
         fxx <= lf_range[1]))]
-    fxx_hf = fxx[np.where(np.logical_and(fxx >= hf_range[0],
-        fxx <= hf_range[1]))]
-    pxx_hf = pxx[np.where(np.logical_and(fxx >= hf_range[0],
-        fxx <= hf_range[1]))]
+    fxx_hf = fxx[np.where(np.logical_and(fxx >= (hf_range[0] - freq_res),
+        fxx <= (hf_range[1] + freq_res)))]
+    pxx_hf = pxx[np.where(np.logical_and(fxx >= (hf_range[0] - freq_res),
+        fxx <= (hf_range[1] + freq_res)))]
 
     return [zip(fxx_vlf, pxx_vlf), zip(fxx_lf, pxx_lf), zip(fxx_hf, pxx_hf)]
 

@@ -96,7 +96,7 @@ class FrequencyDomain(MetaModel):
         self.fs = fs
 
     def calculate(self, segment, overlap, window="hanning",
-            vlf_range=(0.003, 0.04), lf_range=(0.04, 0.15),
+            vlf_range=(0.000, 0.05), lf_range=(0.04, 0.15),
             hf_range=(0.15, 0.4)):
         self.segment = segment
         self.overlap = overlap
