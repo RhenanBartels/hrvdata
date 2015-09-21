@@ -6,8 +6,8 @@
     {% if request.user.is_authenticated %}
         <p class="navbar-text">
             <i class="fa fa-user"></i> {% user_display request.user %}
-            </p>
-<!--        <li>
+        </p>
+       <li>
             <a href="{% url 'filelist_page' %}"><i class="fa fa-database"></i>{% trans " My Files" %}</a>
         </li>
         <li>
@@ -15,10 +15,10 @@
         </li>
         <li>
             <a href="{% url 'upload_page' %}"><i class="fa fa-share"></i>{% trans " Shared Files" %}</a>
-            </li>-->
-        <li>
-            <a href="{% url 'account_settings' %}"><i class="fa fa-cog"></i> {% trans "Settings" %}</a>
         </li>
+        <!--<li>
+            <a href="{% url 'account_settings' %}"><i class="fa fa-cog"></i> {% trans "Settings" %}</a>
+            </li> -->
         <li>
             <a id="account_logout" href="{% url 'account_logout' %}"><i class="fa fa-power-off"></i> {% trans "Log out" %}</a>
         </li>

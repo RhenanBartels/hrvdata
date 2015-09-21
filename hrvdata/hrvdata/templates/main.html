@@ -5,7 +5,7 @@
 	<head>
 		<meta http-equiv="content-type" content="text/html; charset=UTF-8">
 		<meta charset="utf-8">
-		<title>Dashboard with Off-canvas Sidebar</title>
+		<title>HRVData</title>
 		<meta name="generator" content="Bootply" />
 		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
                 <link href="{{ STATIC_URL }}css/bootstrap.min.css" rel="stylesheet">
@@ -16,7 +16,7 @@
 	</head>
 <div class="container-fluid">
 
-      <div class="row row-offcanvas row-offcanvas-left">
+      <div class="row row-offcanvas row-offcanvas-left" id="sidebar-wrapper">
 
          <div class="col-sm-3 col-md-2 sidebar-offcanvas" id="sidebar" role="navigation">
             {% url "analysis_page" as analysis_page %}

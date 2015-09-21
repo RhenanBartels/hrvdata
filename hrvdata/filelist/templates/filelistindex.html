@@ -11,8 +11,8 @@
 <center>
 {% if data %}
 <ul>
-    <li class="colordvcon"><a href={{ upload_page }}><div id="img"><img id="adddoc" src="
-            {% static "images/adddocument.png" %}"></div></a></li>
+<!--    <li class="colordvcon"><a href={{ upload_page }}><div id="img"><img id="adddoc" src="
+        {% static "images/adddocument.png" %}"></div></a></li> -->
     {% for rri in data %}
     <!--<li id={{ rri.filename }}> <a href="/{{ analysis_page }}/{{ rri.filename}}">-->
         <li id={{ rri.filename }} class="colordvcon"> <a href="/analysis/{{ rri.filename}}">

@@ -30,5 +30,4 @@ class Settings(models.Model):
     tf_overlap_size = models.IntegerField(default=256)
     tf_model_order = models.IntegerField(default=16)
 
-
 User.profile = property(lambda u: Image.objects.get_or_create(owner=u)[0])
