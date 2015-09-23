@@ -12,9 +12,10 @@ from hrvtools.hrv import TimeDomain, TimeVarying, FrequencyDomain
 def index(request, filename):
     user = request.user
     rri_file = Tachogram.objects.get(owner=user, filename=filename)
-    rri = get_file_information(rri_file.rri)
+    rri = get_file_information(rri_file)
     time_domain= TimeDomain(rri)
     frequency_domain = FrequencyDomain(rri)
+    #TODO: Use the information from the database to calculate the indices
     segment = 256
     overlap = 128
     frequency_domain.calculate(segment, overlap)
@@ -53,7 +54,7 @@ def index(request, filename):
 def change_tv_index(request, filename, indexname):
     user = request.user
     rri_file = Tachogram.objects.get(owner=user, filename=filename)
-    rri = get_file_information(rri_file.rri)
+    rri = get_file_information(rri_file)
     time_varying = TimeVarying(rri, 30, 0)
     time_varying.calculate()
     if indexname == "rmssdi_li":
@@ -79,17 +80,26 @@ def change_tv_index(request, filename, indexname):
         content_type="application/json")
 
 def get_file_information(f):
-    for chunk in f.chunks():
-        rri = chunk
-    rri = rri.split("\r\n")
-    rri = [float(rri) for rri in rri if rri]
-    return  rri
+    #Check if it is possible to read as a text file.
+    try:
+        rri = [float(value.strip()) for value in
+                signal.readlines() if value.strip()]
+    except:
+        import re
+        for chunk in f.rri.chunks():
+            file_content = chunk
+        rri = [float(value.strip()) for value in
+                re.findall("\d{3,4}\\r\\n", file_content)]
+        #Remove empty values and zeros.
+        rri = [rri for rri in rri if rri]
+    return rri
 
 def split_psd_classes(freq_domain):
     fxx, pxx = freq_domain.fxx, freq_domain.pxx
     vlf_range = freq_domain.vlf_range
     lf_range = freq_domain.lf_range
     hf_range = freq_domain.hf_range
+    #Make sure that the PSD bands are adjacents
     freq_res = fxx[1] - fxx[0]
     fxx_vlf = fxx[np.where(np.logical_and(fxx >= (vlf_range[0] - freq_res),
         fxx <= vlf_range[1]))]

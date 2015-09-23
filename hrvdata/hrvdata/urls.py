@@ -15,6 +15,7 @@ urlpatterns = patterns(
     url(r"^upload/", include("upload.urls")),
     url(r"^filelist/", include("filelist.urls"), name="filelist"),
     url(r"^export/", include("export.urls")),
+    url(r"^report/", include("report.urls")),
 )
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

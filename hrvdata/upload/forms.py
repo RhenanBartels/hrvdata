@@ -15,6 +15,7 @@ class FileForm(forms.Form):
                 rri_to_validate = read_rri_from_django(rri_data)
             except ValueError:
                 raise ValidationError("Sorry, we did not understand you file.")
+            #TODO: dont know why this validation is here down.
             hrv._validate_rri(rri_to_validate)
         return rri_data
 

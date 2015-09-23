@@ -146,6 +146,7 @@ INSTALLED_APPS = [
     "upload",
     "filelist",
     "export",
+    "report",
 ]
 
 # A sample logging configuration. The only tangible logging

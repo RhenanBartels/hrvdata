@@ -10,6 +10,7 @@
 <link href="{{ STATIC_URL }}css/filelistcustom.css" rel="stylesheet">
 <center>
 {% if data %}
+    <h3> Your Files </h3>
 <ul>
 <!--    <li class="colordvcon"><a href={{ upload_page }}><div id="img"><img id="adddoc" src="
         {% static "images/adddocument.png" %}"></div></a></li> -->
@@ -29,12 +30,13 @@
         </li>
     {% endfor %}
 </ul>
-</center>
 {% else %}
     <h3> You do not have any files yet :(</h3>
     <!-- <img src="{% static "images/empty_box.png" %}"/> -->
     <h4>Upload one <a href={{ upload_page }}>here</a></h4>
 {% endif %}
+    <h3> Files Shared With You </h3>
+</center>
 </body>
 </html>
 

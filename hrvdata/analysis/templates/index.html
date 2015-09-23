@@ -90,7 +90,7 @@
         <div id="time-varying"></div>
 <!-- Ajax ou AngularJS na geracao dos relatorios -->
 <a href="/export/{{ filename }}">Export Results</a> |
-          <a href="http://www.bootply.com/128936">Generate Report</a>
+<a href="{% url "report_page" %}{{ filename }}">Generate Report</a>
 
 </body>
 </html>
