@@ -1,5 +1,4 @@
 $(document).ready(function() {
-
     var rri_name = getFileName();
     doAjax(rri_name);
 
@@ -23,6 +22,33 @@ $(document).ready(function() {
     }
 
     function plot(data){
+        var optionsrri = {
+            xaxis: {
+                   zoomRange: [-100000, 100000],
+                   panRange: [-100000, 100000]
+            },
+            yaxis: {
+                    zoomRange: [-100000, 100000],
+                    panRange: [-100000, 100000]
+            },
+            zoom: {
+                      interactive: true
+            },
+            pan: {
+                     interactive: true
+            },
+        };
+        var optionsnavigation = {
+            xaxis: {
+               ticks: []
+            },
+            yaxis: {
+               ticks: []
+            },
+            selection: {
+               mode: "x"
+           },
+        };
         var optionspsd = {
             colors:["#0097ff","#81d8d0", "#b0e0e6"],
             lines:{
@@ -44,8 +70,13 @@ $(document).ready(function() {
                 fill:true,
                 fillColor:false,
             },
+            grid: {
+                      hoverable: true,
+                      clickable: true
+            },
         };
-        $.plot(("#rri"), [data.rri]);
+        $.plot(("#rri"), [data.rri], optionsrri);
+        $.plot(("#navigation"), [data.rri], optionsnavigation);
         $.plot(("#time-varying"), [data.rmssdi], optionstv);
         $.plot(("#psd"), [data.vlfpsd, data.lfpsd, data.hfpsd], optionspsd);
 
@@ -106,4 +137,44 @@ $(document).ready(function() {
         }
         return cookieValue;
     }
+
+    $(function() {
+		$("<div id='tooltip'></div>").css({
+			position: "absolute",
+			display: "none",
+			border: "1px solid #fdd",
+			padding: "2px",
+			"background-color": "#fee",
+			opacity: 0.80
+		}).appendTo("body");
+    });
+    $("#time-varying").bind("plothover", function (event, pos, item) {
+
+            if (item) {
+                    var x = item.datapoint[0].toFixed(2),
+                            y = item.datapoint[1].toFixed(2);
+
+                    $("#tooltip").html("Value" + " of " + x + " = " + y)
+                            .css({top: item.pageY+5, left: item.pageX+5})
+                            .fadeIn(200);
+            } else {
+                    $("#tooltip").hide();
+            }
+    });
+
+    $("#time-varying").bind("plotclick", function (event, pos, item) {
+            if (item) {
+                    $("#clickdata").text(" - click point " + item.dataIndex + " in " + item.series.label);
+                    console.log(item.dataIndex);
+            }
+    });
+
+    $("#navigation").bind("plotselected", function (event, ranges) {
+        //TODO: Every time that the user select a range go to the server
+        //access the settings model, change the start and end signal
+        //analyse the signal again, test if there is enough signal to
+        //analyze frequency domain e time varying and finally refresh the
+        //indices
+        console.log("From: " + ranges.xaxis.from + " To: " + ranges.xaxis.to);
+    });
 });

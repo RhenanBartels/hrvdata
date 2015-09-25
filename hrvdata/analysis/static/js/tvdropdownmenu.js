@@ -35,6 +35,10 @@ $(document).ready(function (){
                 fill:true,
                 fillColor:false,
             },
+            grid: {
+              hoverable: true,
+              clickable: true
+                  }
         };
         $.plot(("#time-varying"), [data.time_varying_index], options);
 
@@ -71,5 +75,36 @@ $(document).ready(function (){
         }
         return cookieValue;
     }
+
+    $(function() {
+		$("<div id='tooltip'></div>").css({
+			position: "absolute",
+			display: "none",
+			border: "1px solid #fdd",
+			padding: "2px",
+			"background-color": "#fee",
+			opacity: 0.80
+		}).appendTo("body");
+    });
+		$("#time-varying").bind("plothover", function (event, pos, item) {
+
+                        if (item) {
+                                var x = item.datapoint[0].toFixed(2),
+                                        y = item.datapoint[1].toFixed(2);
+
+                                $("#tooltip").html("Value" + " of " + x + " = " + y)
+                                        .css({top: item.pageY+5, left: item.pageX+5})
+                                        .fadeIn(200);
+                        } else {
+                                $("#tooltip").hide();
+                        }
+		});
+
+		$("#time-varying").bind("plotclick", function (event, pos, item) {
+			if (item) {
+				$("#clickdata").text(" - click point " + item.dataIndex + " in " + item.series.label);
+                                console.log(item.dataIndex);
+			}
+		});
 
 })
