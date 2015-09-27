@@ -147,6 +147,7 @@ INSTALLED_APPS = [
     "filelist",
     "export",
     "report",
+    "share",
 ]
 
 # A sample logging configuration. The only tangible logging

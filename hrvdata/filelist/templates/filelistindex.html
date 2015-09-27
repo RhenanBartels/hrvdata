@@ -24,7 +24,15 @@
                <img id={{ rri.filename }} class="del_btn" src="{% static "images/delete96.png" %}"/> </a>
             </div>
            <div class="inline">
-               <img src="{% static "images/social24.png" %}"/> </a>
+               <img id= "{{ rri.filename }}" class="shareimage"
+               src="{% static "images/social24.png" %}"/> </a>
+           </div>
+           <div id="div_{{ rri.filename }}" style="display:none" class="inline-form">
+               <form id="form_{{ rri.filename }}" class="emailform" method="POST">
+                   {{ share_form }}
+                   <input type"submit" class="btn" id="btn_{{ rri.filename }}"
+                   value="Share">
+               </form>
            </div>
 
         </li>

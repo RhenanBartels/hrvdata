@@ -15,6 +15,15 @@ $(document).ready(function(){
         }
     })
 
+    $(".shareimage").hover(function(){
+        $(this).css("cursor", "pointer");
+    });
+
+    $(".shareimage").click(function(){
+        var formId = "#div_"  + this.id;
+        $(formId).toggle();
+    });
+
     function doAjax(filename){
         var csrftoken = getCookie('csrftoken');
         $.ajax({

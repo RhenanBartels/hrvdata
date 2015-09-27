@@ -1,6 +1,6 @@
 .colordvcon {
     display:inline-block;
-    margin: 3px 1px;
+    margin: 3px 25px;
   text-align: center;
   font-family:Courier,monospace;
   padding:6px;
@@ -23,6 +23,38 @@ border-radius: 5px;
    float: center;
 }
 
+.inline-form{
+   display:inline-block;
+   float: left;
+   padding-top: 8px;
+   padding-right: 800px;
+   margin-left: auto;
+   margin-right: auto;
+}
+
 #adddoc {
     padding-bottom: 8px;
+}
+
+.inline {
+    display:inline-block;
+}
+
+.btn {
+    background-repeat: repeat-x;
+    border: 1px solid rgba(0, 0, 0, 0.14902);
+    box-shadow: rgba(255, 255, 255, 0.2) 0px 1px 0px 0px inset, rgba(0, 0, 0, 0.0470588) 0px 1px 2px 0px;
+    color: #333;
+    display: inline-block;
+    font-family: Tahoma, sans-serif;
+    font-size: 14px;
+    margin: 0 0 0 -1px;
+    padding: 4px 14px;
+    height: 20px;
+    line-height: 20px;
+    text-align: center;
+    text-decoration: none;
+    text-shadow: rgba(255, 255, 255, 0.74902) 0px 1px 1px;
+    vertical-align: top;
+    width: 67px;
 }
