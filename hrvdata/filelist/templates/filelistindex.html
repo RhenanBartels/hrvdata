@@ -28,10 +28,14 @@
                src="{% static "images/social24.png" %}"/> </a>
            </div>
            <div id="div_{{ rri.filename }}" style="display:none" class="inline-form">
-               <form id="form_{{ rri.filename }}" class="emailform" method="POST">
+            <div>
+                <ul style="list-style-type:none">
+                    <li style="color:red" id='li_{{ rri.filename }}'>  </li>
+                </ul>
+            </div>
+               <form id="form_{{ rri.filename }}" class="emailform" method="POST" >
                    {{ share_form }}
-                   <input type"submit" class="btn" id="btn_{{ rri.filename }}"
-                   value="Share">
+                   <input type="submit" class="btn"  id="btn_{{ rri.filename }}" value="Share">
                </form>
            </div>
 
@@ -44,6 +48,16 @@
     <h4>Upload one <a href={{ upload_page }}>here</a></h4>
 {% endif %}
     <h3> Files Shared With You </h3>
+    {% url "analysis_shared_page" as analysis_shared %}
+    {% for sf in shared %}
+    <li id={{ sf.filename }} class="colordvcon"> <a href="/analysis/shared/{{ sf.filename}}">
+        <div id="img">
+               <img src="{% static "images/document9.png" %}"/> {{ sf.filename }}</a>
+        </div>
+           <div class="inline">
+               <img id={{ sf.filename }} class="del_btn_share" src="{% static "images/delete96.png" %}"/> </a>
+            </div>
+    {% endfor %}
 </center>
 </body>
 </html>

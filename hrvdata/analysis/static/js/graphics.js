@@ -1,6 +1,12 @@
 $(document).ready(function() {
     var rri_name = getFileName();
-    doAjax(rri_name);
+    //Check if the analysis is of shared file
+    if (rri_name.search("shared")){
+        sharedAjax(rri_name);
+    }
+    else{
+        doAjax(rri_name);
+    }
 
     function getFileName(){
         var url_name = window.location.pathname.split("/");
@@ -9,6 +15,19 @@ $(document).ready(function() {
     }
 
     function doAjax(rri_code){
+        var csrftoken = getCookie('csrftoken');
+        $.ajax({
+            url: rri_code,
+            type:'post',
+            headers: {'X-CSRFToken': csrftoken},
+            success:function(data){
+                plot(data);
+//                changeIndexDropDownMenu(data);
+            }
+        });
+    }
+
+    function sharedAjax(rri_code){
         var csrftoken = getCookie('csrftoken');
         $.ajax({
             url: rri_code,

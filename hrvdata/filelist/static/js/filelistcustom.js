@@ -7,11 +7,23 @@ $(document).ready(function(){
         $(this).css("cursor", "pointer");
     });
 
+    $(".del_btn_share").hover(function(){
+        $(this).css("cursor", "pointer");
+    });
+
     $(".del_btn").click(function(){
         //Check if the user really want to delete the file
         var confirm_delete = confirm("Are you sure you wanna delete this file?");
         if (confirm_delete){
             doAjax(this.id);
+        }
+    })
+
+    $(".del_btn_share").click(function(){
+        //Check if the user really want to delete the file
+        var confirm_delete = confirm("Are you sure you wanna remove this file from you file list?");
+        if (confirm_delete){
+            deleteShareAjax(this.id);
         }
     })
 
@@ -24,6 +36,14 @@ $(document).ready(function(){
         $(formId).toggle();
     });
 
+    $(".emailform").submit(function(event) {
+        event.preventDefault();
+        var email = $(this).serialize();
+        email = decodeURIComponent(email).split("=")[1];
+        var id = this.id.split("_")[1];
+        shareAjax(email, id);
+    });
+
     function doAjax(filename){
         var csrftoken = getCookie('csrftoken');
         $.ajax({
@@ -32,13 +52,85 @@ $(document).ready(function(){
             data: {'filename': filename},
             headers: {'X-CSRFToken': csrftoken},
             beforeSend: function(){
-                console.log("ta indo");
 
             },
             success: function(){
                 $("#" + filename).hide();
                 isEmpty();
             }
+
+        });
+    }
+
+    function deleteShareAjax(filename){
+        var csrftoken = getCookie('csrftoken');
+        $.ajax({
+            url: "/share/delete/",
+            type: "post",
+            data: {'filename': filename},
+            headers: {'X-CSRFToken': csrftoken},
+            beforeSend: function(){
+
+            },
+            success: function(){
+                 $("#" + filename).hide();
+            }
+
+        });
+    }
+
+    function shareAjax(email, filename){
+        var csrftoken = getCookie('csrftoken');
+        var button = $("#btn_" + filename);
+        $.ajax({
+            url: "/share/",
+            type: "post",
+            data: {'receiver_email': email, 'filename': filename},
+            headers: {'X-CSRFToken': csrftoken},
+            beforeSend: function(){
+                button.val("Sharing...");
+            },
+            success: function(response){
+            var error_log = $("#li_" + filename);
+            error_log.show();
+            error_log.css("color", "red")
+            if (response.log == "Success"){
+                error_log.css("color", "green")
+                error_log.text(response.log + "!");
+                $("#div_" + filename).delay(2000).fadeToggle();
+                error_log.text("");
+
+            }
+            else if (response.log == "notvalid"){
+                error_log.text("Email not valid!");
+
+            }
+            else if (response.log == "sameuser"){
+                error_log.text("You need to inform a different email!");
+            }
+            else if (response.log == "notuser"){
+                   // questionDialog();
+                    var hasConfirmed = confirm("There is no User with this" +
+                            " email.\nDo you want to send by email?");
+
+                    if (hasConfirmed){
+                        $.ajax({url: 'share/email/',
+                                headers: {'X-CSRFToken': csrftoken},
+                                type: 'post',
+                                data: {"usermail": email},
+                                success: function() {
+                                    alert('Dicom shared successfully');
+                                    var btnId = "#btn_" + dicomId;
+                                    $(btnId).val("Share");
+                                },
+
+
+                        });
+                    }
+                }
+            error_log.delay(2000).fadeOut();
+            button.val("Share");
+           }
 
         });
     }
