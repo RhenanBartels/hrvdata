@@ -22,10 +22,11 @@
             {% url "analysis_page" as analysis_page %}
             {% url "upload_page" as upload_page %}
             {% url "filelist_page" as filelist_page %}
+            {% url "share_files_page" as share_files_page %}
             <ul class="nav nav-sidebar">
                 <li id="filelist_li"class="active"><a href={{ filelist_page }}>My Files</a></li>
               <li id="upload_li"><a href={{ upload_page }}>Upload</a></li>
-              <li id="upload_li"><a href={{ upload_page }}>Shared Files</a></li>
+              <li id="share_li"><a href={{ share_files_page }}>Shared Files</a></li>
             </ul>
         </div>
         <div class="col-sm-9 col-md-10 main">

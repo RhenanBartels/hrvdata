@@ -67,6 +67,9 @@ $(document).ready(function() {
             selection: {
                mode: "x"
            },
+            grid: {
+                hoverable:false,
+            },
         };
         var optionspsd = {
             colors:["#0097ff","#81d8d0", "#b0e0e6"],
@@ -95,10 +98,22 @@ $(document).ready(function() {
             },
         };
         $.plot(("#rri"), [data.rri], optionsrri);
-        $.plot(("#navigation"), [data.rri], optionsnavigation);
+        var navigationPlot =  $.plot(("#navigation"), [data.rri], optionsnavigation);
         $.plot(("#time-varying"), [data.rmssdi], optionstv);
         $.plot(("#psd"), [data.vlfpsd, data.lfpsd, data.hfpsd], optionspsd);
 
+        //Select entire signal in the nagivation plot
+        setRriPlotSelection(navigationPlot, data.rri.slice(0)[0][0],
+                data.rri.slice(-1)[0][0])
+        $("#navigation").bind("plothover", function (event, pos, item) {
+            //var currentPlotSelection = navigationPlot.getSelection();
+            console.log(currentPlotSelection.xaxis);
+           // if (currentPlotSelection == null){
+           //     setRriPlotSelection(navigationPlot, data.rri.slice(0)[0][0],
+            //            data.rri.slice(-1)[0][0])
+           // }
+        })
+        //TODO> Create a button to put the RRi plot in the original zoom
         //TODO: Create a function to make this plot and avoid repetion (DRY)
         window.onresize = function(event) {
             $.plot(("#rri"), [data.rri]);
@@ -157,6 +172,16 @@ $(document).ready(function() {
         return cookieValue;
     }
 
+    function setRriPlotSelection(plotObj, from, to){
+        plotObj.setSelection({
+            xaxis:{
+                      from: from,
+                      to: to,
+                  }
+        })
+
+    }
+
     $(function() {
 		$("<div id='tooltip'></div>").css({
 			position: "absolute",
@@ -184,7 +209,6 @@ $(document).ready(function() {
     $("#time-varying").bind("plotclick", function (event, pos, item) {
             if (item) {
                     $("#clickdata").text(" - click point " + item.dataIndex + " in " + item.series.label);
-                    console.log(item.dataIndex);
             }
     });
 

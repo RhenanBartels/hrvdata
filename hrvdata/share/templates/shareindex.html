@@ -1,0 +1,30 @@
+{% extends "site_base.html" %}
+
+{% load i18n %}
+{% load staticfiles %}
+
+{% block body_base %}
+{% include "main.html" %}
+
+<center>
+    <h2> Manage Your Shared Files </h2>
+        <ul>
+        {% for key, value_list  in shared_relation.items %}
+        <li id="li_{{ key }}"> {{ key }}</li>
+        <form id="form_{{ key }}" class="shareform" method="POST">
+                <select id="{{ key }}" name=dropdownshare>
+                    {% for value in value_list %}
+                    <option id="option_{{ key }}"> {{ value }} </option>
+                    {% endfor %}
+            </select>
+                <input type="submit" value="Unshare">
+            </form>
+        {% endfor %}
+        </ul>
+    <!-- unshare via AJAX. Prevent default submition. Put the filename as the id
+    and unshare it. Then, remove the email from the unshared user -->
+</center>
+</body>
+</html>
+<script type="text/javascript" src="{{ STATIC_URL }}js/sharecustom.js"></script>
+{% endblock %}

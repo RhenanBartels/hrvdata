@@ -6,6 +6,7 @@
 {%block body_base %}
 {% include "main.html" %}
         <div id="title" style="text-align: center"><h2>Tachogram</h2></div>
+        <div class="form-settings" ><a href="#settingstachogram" data-toggle="modal">Settings</a></div>
         <div id="rri"></div>
         <div id="navigation"></div>
           <hr>
@@ -73,9 +74,10 @@
             </table>
         </div>
         <h2> Power Spectrum Density </h2>
+        <div class="form-settings" ><a href="#settingspsd" data-toggle="modal">Settings</a></div>
         <div id="psd"></div>
         <h2> Time Varying </h2>
-<div class="bs-example">
+<div class="bs-example" style"display:inline-block">
    <div class="dropdown">
         <a id="mainindexdropdown" data-target="#" href="" data-toggle="dropdown"
            class="dropdown-toggle">Index <b class="caret"></b></a>
@@ -85,7 +87,9 @@
             <li id="pnn50i_li" class="chooseindex"><a>pNN50i</a></li>
             <li id="mrrii_li" class="chooseindex"><a>Mean RRii</a></li>
             <li id="mhri_li" class="chooseindex"><a>Mean HRi</a></li>
-        </ul>
+        </ul>  |
+        <div class="form-settings" style="text-align:right;display:inline-block" >
+            <a href="#settingstv" data-toggle="modal">Settings</a></div>
     </div>
 </div>
         <div id="time-varying"></div>
@@ -93,9 +97,88 @@
 <a href="/export/{{ filename }}">Export Results</a> |
 <a href="{% url "report_page" %}{{ filename }}">Generate Report</a>
 
+<!-- Modal Settings popup dialogs -->
+<div class="modal fade" id="settingstachogram" role="dialog" data-backdrop="false">
+    <div class="modal-dialog">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3>Tachogram Settings</h3>
+        </div>
+        <div class="modal-body">
+            <form>
+                    <label>Detrend Method: </label>
+                {{ tachogramsettingsform.detrend_method }}
+                <div id="tachogramsettingsfilter">
+                    <label>Filter: </label>
+                    {{ tachogramsettingsform.filter_method }}
+                </div>
+                <div id="tachogramsettingsfilterorder">
+                    <label>Filter Order: </label>
+                    {{ tachogramsettingsform.filter_order }}
+                </div>
+            </form>
+       </div>
+       <div class="modal-footer">
+           <a class="btn btn-default" data-dismiss="modal">Close</a>
+           <a class="btn btn-primary" data-dismiss="modal" id="tachogramsubmitsettings">Submit</a>
+       </div>
+    </div>
+    </div>
+</div>
+
+<div class="modal fade" id="settingspsd" role="dialog" data-backdrop="false">
+    <div class="modal-dialog">
+    <div class="modal-content">
+        <div class="modal-header">
+            <p>Contact</p>
+        </div>
+        <div class="modal-body">
+ <form>
+       First name:<br>
+         <input type="text" name="firstname">
+           <br>
+             Last name:<br>
+             <input type="text" name="lastname"><br>
+             <input type="radio" name="sex" value="male" checked>Welch's Method
+             <input type="radio" name="sex" value="female">Auto Regressive
+           </form>
+       </div>
+       <div class="modal-footer">
+           <a class="btn btn-default" data-dismiss="modal">Close</a>
+           <a class="btn btn-primary" data-dismiss="modal">Submit</a>
+       </div>
+    </div>
+    </div>
+</div>
+
+<div class="modal fade" id="settingstv" role="dialog" data-backdrop="false">
+    <div class="modal-dialog">
+    <div class="modal-content">
+        <div class="modal-header">
+            <p>Contact</p>
+        </div>
+        <div class="modal-body">
+ <form>
+       First name:<br>
+         <input type="text" name="firstname">
+           <br>
+             Last name:<br>
+             <input type="text" name="lastname"><br>
+             <input type="radio" name="sex" value="male" checked>Welch's Method
+             <input type="radio" name="sex" value="female">Auto Regressive
+           </form>
+       </div>
+       <div class="modal-footer">
+           <a class="btn btn-default" data-dismiss="modal">Close</a>
+           <a class="btn btn-primary" data-dismiss="modal">Submit</a>
+       </div>
+    </div>
+    </div>
+</div>
 </body>
 </html>
 <link rel="stylesheet", href="{{ STATIC_URL }}css/graphics.css">
+<link rel="stylesheet", href="{{ STATIC_URL }}css/customanalysis.css">
 
 <script type="text/javascript" src="{{ STATIC_URL }}js/jquery-1.11.3.min.js"></script>
 <script type="text/javascript" src="{{ STATIC_URL }}js/jquery.flot.js"></script>

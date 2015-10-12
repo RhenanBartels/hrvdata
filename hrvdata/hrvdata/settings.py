@@ -1,6 +1,5 @@
 import os
 
-
 PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir))
 PACKAGE_ROOT = os.path.abspath(os.path.dirname(__file__))
 BASE_DIR = PACKAGE_ROOT
@@ -68,6 +67,7 @@ STATICFILES_DIRS = [
     os.path.join(PROJECT_ROOT, "analysis", "static"),
     os.path.join(PROJECT_ROOT, "upload", "static"),
     os.path.join(PROJECT_ROOT, "filelist", "static"),
+    os.path.join(PROJECT_ROOT, "share", "static"),
 ]
 
 # List of finder classes that know how to find static files in
@@ -120,6 +120,7 @@ TEMPLATE_DIRS = [
     os.path.join(PACKAGE_ROOT, "analysis", "templates"),
     os.path.join(PACKAGE_ROOT, "upload", "templates"),
     os.path.join(PACKAGE_ROOT, "filelist", "templates"),
+    os.path.join(PACKAGE_ROOT, "share", "templates"),
 ]
 
 INSTALLED_APPS = [

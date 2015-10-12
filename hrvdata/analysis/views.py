@@ -8,12 +8,15 @@ from django.contrib.auth.models import User
 
 from upload.models import Tachogram
 from share.models import SharedFile
+from .forms import TachogramSettingsForm
 
 import hrv
 from hrvtools.hrv import TimeDomain, TimeVarying, FrequencyDomain
 
 #TODO: use new hrv module intalled with pip. Remove hrvtools library
 def index(request, filename):
+    #Instanciate tachogram settings form
+    tachogram_settings_form = TachogramSettingsForm()
     user = request.user
     rri_file = Tachogram.objects.get(owner=user, filename=filename)
     rri = get_file_information(rri_file)
@@ -37,7 +40,8 @@ def index(request, filename):
             "lfhf": round(frequency_domain.lfhf, 2),
             "lfnu": round(frequency_domain.lfnu, 2),
             "hfnu": round(frequency_domain.hfnu, 2),
-            "filename": filename}
+            "filename": filename,
+            "tachogramsettingsform": tachogram_settings_form}
     if request.is_ajax():
         time_varying = TimeVarying(rri, 30, 0)
         time_varying.calculate()
