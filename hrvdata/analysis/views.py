@@ -6,19 +6,24 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from django.contrib.auth.models import User
 
-from upload.models import Tachogram
+from upload.models import Tachogram, Settings
 from share.models import SharedFile
-from .forms import TachogramSettingsForm
+from analysis.models import Comment
+from .forms import TachogramSettingsForm, TimeVaryingSettingsForm
 
 import hrv
 from hrvtools.hrv import TimeDomain, TimeVarying, FrequencyDomain
 
 #TODO: use new hrv module intalled with pip. Remove hrvtools library
+#TODO: Make the comments different from shared files.
 def index(request, filename):
     #Instanciate tachogram settings form
     tachogram_settings_form = TachogramSettingsForm()
+    time_varying_settings_form = TimeVaryingSettingsForm()
     user = request.user
     rri_file = Tachogram.objects.get(owner=user, filename=filename)
+    #Get the parameters in the database
+    settings = Settings.objects.get(signal=rri_file)
     rri = get_file_information(rri_file)
     time_domain= TimeDomain(rri)
     frequency_domain = FrequencyDomain(rri)
@@ -28,6 +33,10 @@ def index(request, filename):
     frequency_domain.calculate(segment, overlap)
     time_domain.calculate()
     #TODO: create a function to create the results context
+
+    #Load comments for this file
+    comments = Comment.objects.filter(signal=rri_file)
+
     results = {'rmssd': round(time_domain.rmssd, 2),
             'sdnn': round(time_domain.sdnn, 2),
             'pnn50':round(time_domain.pnn50, 2),
@@ -41,9 +50,13 @@ def index(request, filename):
             "lfnu": round(frequency_domain.lfnu, 2),
             "hfnu": round(frequency_domain.hfnu, 2),
             "filename": filename,
-            "tachogramsettingsform": tachogram_settings_form}
+            "comments": comments,
+            "tachogramsettingsform": tachogram_settings_form,
+            "timevaryingsettingsform": time_varying_settings_form}
     if request.is_ajax():
-        time_varying = TimeVarying(rri, 30, 0)
+        segment_size = settings.tv_segment_size
+        overlap_size = settings.tv_overlap_size
+        time_varying = TimeVarying(rri, segment_size, overlap_size)
         time_varying.calculate()
         rri = time_domain.rri
         rri_time = time_varying.rri_time
@@ -63,8 +76,12 @@ def index(request, filename):
 def change_tv_index(request, filename, indexname):
     user = request.user
     rri_file = Tachogram.objects.get(owner=user, filename=filename)
+    #Get the settings in the database
+    settings = Settings.objects.get(signal=rri_file)
+    segment_size = settings.tv_segment_size
+    overlap_size = settings.tv_overlap_size
     rri = get_file_information(rri_file)
-    time_varying = TimeVarying(rri, 30, 0)
+    time_varying = TimeVarying(rri, segment_size, overlap_size)
     time_varying.calculate()
     if indexname == "rmssdi_li":
         time_varying_index = time_varying.rmssd
@@ -88,11 +105,39 @@ def change_tv_index(request, filename, indexname):
     return HttpResponse(json.dumps(results),
         content_type="application/json")
 
+def settings(request, filename):
+    if request.is_ajax():
+        #Get the RRi
+        user = request.user
+        rri_file = Tachogram.objects.get(owner=user, filename=filename)
+        rri = get_file_information(rri_file)
+        method = request.POST['method']
+        #TODO: Create function to do everything for each method. Instead of
+        #letting the code here directly.
+        if method == 'timevarying':
+            segment_size = int(request.POST['segmentsize'])
+            overlap_size = int(request.POST['overlapsize'])
+            error_msg = validate_timevarying_parameters(rri, segment_size,
+                    overlap_size)
+            time_varying = hrv.time_varying(rri, segment_size, overlap_size)
+            #Save the parameters in the databse
+            settings = Settings.objects.get(signal=rri_file)
+            settings.tv_segment_size = segment_size
+            settings.tv_overlap_size = overlap_size
+            settings.save()
+            results = {'time_varying_index':
+                    zip(time_varying[0], time_varying[1]), 'time_varying_name':
+                    'rmssd'}
+
+        return HttpResponse(json.dumps(results),
+                content_type='application/json')
+
 def shared(request, filename):
     user = request.user
     owner = SharedFile.objects.get(receiver=user.email,
             filename=filename).owner
     rri_file = Tachogram.objects.get(owner=owner, filename=filename)
+    comments = Comment.objects.filter(signal=rri_file)
     rri = get_file_information(rri_file)
     time_domain = hrv.time_domain(rri)
     frequency_domain = hrv.frequency_domain(rri)
@@ -108,7 +153,8 @@ def shared(request, filename):
             "lfhf": round(frequency_domain[1][4], 2),
             "lfnu": round(frequency_domain[1][5], 2),
             "hfnu": round(frequency_domain[1][6], 2),
-            "filename": filename}
+            "filename": filename,
+            "comments": comments}
     if request.is_ajax():
         time_rri = hrv._create_time_array(rri)
         rri_result = zip(time_rri, rri)
@@ -122,6 +168,24 @@ def shared(request, filename):
                 "psd": psd, "time_varying_index": "rmssd"}
         return HttpResponse(json.dumps(results), content_type="application/json")
     return render(request, "index.html", results)
+
+def change_tv_index_shared():
+    pass
+
+#TODO: Make this view work both for shared and not shared
+def comment(request, filename):
+    if request.is_ajax():
+        text = request.POST["text"]
+        user = request.user
+        owner = SharedFile.objects.get(receiver=user.email,
+                filename=filename).owner
+        rri_file = Tachogram.objects.get(owner=owner, filename=filename)
+        new_comment = Comment()
+        new_comment.author = user
+        new_comment.signal = rri_file
+        new_comment.text = text
+        new_comment.save()
+        return HttpResponse("")
 
 def get_file_information(f):
     #Check if it is possible to read as a text file.
@@ -158,3 +222,6 @@ def split_psd_classes(fxx, pxx, vlf_range=(0.003, 0.05),
 
     return [zip(fxx_vlf, pxx_vlf), zip(fxx_lf, pxx_lf), zip(fxx_hf, pxx_hf)]
 
+def validate_timevarying_parameters(rri, segment_size, overlap_size):
+    if overlap_size >= segment_size:
+        return 'Overlap size can not be bigger than Segment size'

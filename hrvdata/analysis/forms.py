@@ -10,3 +10,7 @@ class TachogramSettingsForm(forms.Form):
     filter_method = forms.ChoiceField(choices=FILTER_CHOICES)
     filter_order = forms.IntegerField(min_value=3, initial=3)
 
+class TimeVaryingSettingsForm(forms.Form):
+    segment_size = forms.IntegerField(min_value=5, initial=30)
+    overlap_size = forms.IntegerField(min_value=0, initial=0)
+

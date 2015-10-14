@@ -1,5 +1,5 @@
 $(document).ready(function (){
-
+//TODO: populate the settings popup dialog with database information
     $(".chooseindex").click(function(event) {
         var rriName = getFileName();
         var elementId = $(this).attr("id");
@@ -23,6 +23,40 @@ $(document).ready(function (){
             }
         });
     }
+
+//Change the Time Varying Settings
+$("#timevaryingsubmitsettings").click(function(){
+    console.log("oi");
+    var filename = getFileName();
+    var settings = getTimeVaryingSettings();
+    settingsAjax(filename, settings, 'timevarying');
+});
+
+function getTimeVaryingSettings(){
+    var segmentSize = $("#id_segment_size").val();
+    var overlapSize = $("#id_overlap_size").val();
+    var timeVaryingSettings = [segmentSize, overlapSize];
+    return timeVaryingSettings;
+}
+
+function settingsAjax(filename, settings, method){
+    var csrftoken = getCookie('csrftoken');
+    $.ajax({
+        url: filename + "/settings",
+        type: "post",
+        data: {'segmentsize': settings[0], 'overlapsize': settings[1],
+            'method': method},
+        headers: {'X-CSRFToken': csrftoken},
+        beforeSend: function(){
+
+        },
+        success: function(results){
+            $("#settingstv").modal('hide');
+            plot(results);
+        }
+
+    });
+}
 
     function plot(data){
         var options = {
@@ -60,6 +94,7 @@ $(document).ready(function (){
     var yaxisLabel = $("<div class='axisLabel yaxisLabel'></div>").text(index_name).appendTo($('#time-varying'));
     yaxisLabel.css("margin-top", yaxisLabel.width() / 2 - 20);
         }
+
     function getCookie(name) {
         var cookieValue = null;
         if (document.cookie && document.cookie != '') {
