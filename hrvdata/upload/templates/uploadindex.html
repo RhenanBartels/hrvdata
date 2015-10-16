@@ -7,9 +7,17 @@
 {% include "main.html" %}
         {% url "upload_page" as upload_page %}
         <form enctype="multipart/form-data" method="post" action={{ upload_page }}>
-            {% csrf_token %}
-            {{ fileform.as_p }}
-            <input type="submit" value="Upload">
+            <div class="form-group">
+                {% csrf_token %}
+                {% if fileform.rri_data.errors %}
+                <div class="alert alert-danger" role="alert">
+                    {{ fileform.rri_data.errors }}
+                </div>
+                {% endif %}
+                <label for="{{ fileform.rri_data.id_for_label }}"><h3>Choose your file:</h3></label>
+                {{ fileform.rri_data }}<br/>
+            <input type="submit" class="btn btn-primary" value="Upload">
+            </div>
         </form>
 </body>
 </html>

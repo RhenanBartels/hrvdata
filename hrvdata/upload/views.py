@@ -4,7 +4,8 @@ from .forms import FileForm, read_rri_from_django
 from .models import Tachogram, Settings
 
 import hrv
-
+#TODO: check type of uploaded and save it to database. When clicked in filelist
+#will be easier to open file.
 def index(request):
     template = "uploadindex.html"
     file_form = FileForm(request.POST or None)
@@ -15,13 +16,13 @@ def index(request):
         if file_form.is_valid():
             #For beta version each user can only uplod 5 files,
             number_of_files = Tachogram.objects.filter(owner=user).count()
-            if number_of_files < 5:
+            if number_of_files < 10:
                 file_name = prepare_filename(request.FILES['rri_data'].name)
                 #Check if file already exists
                 if _file_exists(user, file_name):
-                    #TODO: Make a template for more files and for already existing file
-                    template = 'upload_more_files.html'
-                    return render(request, template)
+                    file_form.add_error("rri_data", "You have already uploaded a file with this name.")
+                    context = {'fileform': file_form}
+                    return render(request, template, context)
                 data = file_form.cleaned_data
                 new_file = Tachogram(owner=user, filename=file_name,
                         rri=data['rri_data'])
@@ -30,8 +31,9 @@ def index(request):
                 save_signal_settings(request.FILES['rri_data'], new_file)
                 return redirect('/')
             else:
-                template = 'upload_more_files.html'
-                return render(request, template)
+                file_form.add_error("rri_data", "You have already uploaded 10 files.")
+                context = {'fileform': file_form}
+                return render(request, template, context)
         else:
             context = {'fileform': file_form}
             return render(request, template, context)

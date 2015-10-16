@@ -17,7 +17,7 @@
     {% for rri in data %}
     <!--<li id={{ rri.filename }}> <a href="/{{ analysis_page }}/{{ rri.filename}}">-->
         <li id={{ rri.filename }} class="colordvcon"> <a href="/analysis/{{ rri.filename}}">
-        <div id="img">
+        <div id=".col-md-4">
                <img src="{% static "images/document9.png" %}"/> {{ rri.filename }}</a>
         </div>
            <div class="inline">
@@ -27,15 +27,16 @@
                <img id= "{{ rri.filename }}" class="shareimage"
                src="{% static "images/social24.png" %}"/> </a>
            </div>
-           <div id="div_{{ rri.filename }}" style="display:none" class="inline-form">
-            <div>
-                <ul style="list-style-type:none">
-                    <li style="color:red" id='li_{{ rri.filename }}'>  </li>
-                </ul>
-            </div>
+           <div id="div_{{ rri.filename }}" style="display:none" class="inline">
+                   <div class="alert alert-danger" role="alert" id="error_{{ rri.filename }}" style="display:none">
+                 </div>
+                 <div class="alert alert-success" role="alert" id="success_{{ rri.filename }}" style="display:none">
+                     <span>Success!</span>
+                 </div>
                <form id="form_{{ rri.filename }}" class="emailform" method="POST" >
-                   {{ share_form }}
-                   <input type="submit" class="btn"  id="btn_{{ rri.filename }}" value="Share">
+                   {{ share_form.receiver_email }}</br>
+                   <!--<input type="submit" class="btn"  id="btn_{{ rri.filename }}" value="Share"> -->
+                   <button class="btn btn-primary btn-sm" type="submit">Share</button>
                </form>
            </div>
 

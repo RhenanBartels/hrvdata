@@ -91,22 +91,19 @@ $(document).ready(function(){
                 button.val("Sharing...");
             },
             success: function(response){
-            var error_log = $("#li_" + filename);
-            error_log.show();
-            error_log.css("color", "red")
+            var error_log = $("#error_" + filename);
             if (response.log == "Success"){
-                error_log.css("color", "green")
-                error_log.text(response.log + "!");
+                $("#success_" + filename).show();
                 $("#div_" + filename).delay(2000).fadeToggle();
                 error_log.text("");
-
             }
             else if (response.log == "notvalid"){
                 error_log.text("Email not valid!");
-
+                error_log.show();
             }
             else if (response.log == "sameuser"){
                 error_log.text("You need to inform a different email!");
+                error_log.show();
             }
             else if (response.log == "notuser"){
                    // questionDialog();
