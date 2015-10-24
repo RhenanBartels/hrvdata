@@ -105,6 +105,10 @@ $(document).ready(function(){
                 error_log.text("You need to inform a different email!");
                 error_log.show();
             }
+            else if (response.log == "alreadyshared"){
+                error_log.text("File already shared with this user!");
+                error_log.show();
+            }
             else if (response.log == "notuser"){
                    // questionDialog();
                     var hasConfirmed = confirm("There is no User with this" +

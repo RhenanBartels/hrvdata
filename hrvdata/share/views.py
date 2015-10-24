@@ -38,11 +38,19 @@ def index(request):
             except ObjectDoesNotExist:
                 user_exist = None
             if user_exist:
-                #TODO: Check if this file is already shared with one user.
                 #TODO: Refoctor this view to make the if-else logic cleaner
                 # Check if the user is not sharing a file with himself.
+                file_name = request.POST['filename']
+                try:
+                    is_shared = SharedFile.objects.get(owner=request.user,
+                            receiver=useremail, filename=file_name)
+                except SharedFile.DoesNotExist:
+                    pass
+                if is_shared:
+                    return HttpResponse(json.dumps({'log': 'alreadyshared'}),
+                            content_type='application/json')
+
                 if not useremail == request.user.email:
-                    file_name = request.POST['filename']
                     new_share = SharedFile(owner=request.user, receiver=useremail,
                             filename=file_name)
                     new_share.save()

@@ -59,7 +59,6 @@ $(document).ready(function() {
         };
         var optionsnavigation = {
             xaxis: {
-               ticks: []
             },
             yaxis: {
                ticks: []
@@ -101,6 +100,7 @@ $(document).ready(function() {
         var navigationPlot =  $.plot(("#navigation"), [data.rri], optionsnavigation);
         $.plot(("#time-varying"), [data.rmssdi], optionstv);
         $.plot(("#psd"), [data.vlfpsd, data.lfpsd, data.hfpsd], optionspsd);
+        $(".spinner").hide();
 
         //Select entire signal in the nagivation plot
         setRriPlotSelection(navigationPlot, data.rri.slice(0)[0][0],

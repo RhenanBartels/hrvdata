@@ -128,7 +128,6 @@ def settings(request, filename):
             results = {'time_varying_index':
                     zip(time_varying[0], time_varying[1]), 'time_varying_name':
                     'rmssd'}
-
         return HttpResponse(json.dumps(results),
                 content_type='application/json')
 
@@ -172,20 +171,36 @@ def shared(request, filename):
 def change_tv_index_shared():
     pass
 
-#TODO: Make this view work both for shared and not shared
-def comment(request, filename):
+#TODO: make a query with all comments of the current user and pass as context
+#to enable edition and deletion
+def shared_comment(request, filename):
     if request.is_ajax():
         text = request.POST["text"]
         user = request.user
         owner = SharedFile.objects.get(receiver=user.email,
                 filename=filename).owner
         rri_file = Tachogram.objects.get(owner=owner, filename=filename)
-        new_comment = Comment()
-        new_comment.author = user
-        new_comment.signal = rri_file
-        new_comment.text = text
-        new_comment.save()
-        return HttpResponse("")
+        save_comment(rri_file, text, user)
+        comment_context = {"user": user.username}
+        return HttpResponse(json.dumps(comment_context),
+            content_type="application/json")
+
+def comment(request, filename):
+    if request.is_ajax():
+        text = request.POST["text"]
+        user = request.user
+        rri_file = Tachogram.objects.get(owner=user, filename=filename)
+        save_comment(rri_file, text, user)
+        comment_context = {"user": user.username}
+        return HttpResponse(json.dumps(comment_context),
+            content_type="application/json")
+
+def save_comment(rri_file, text, user):
+    new_comment = Comment()
+    new_comment.author = user
+    new_comment.signal = rri_file
+    new_comment.text = text
+    new_comment.save()
 
 def get_file_information(f):
     #Check if it is possible to read as a text file.

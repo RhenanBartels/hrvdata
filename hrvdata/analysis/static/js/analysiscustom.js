@@ -23,33 +23,50 @@ $(document).ready(function(){
     //than X comments show Load more comments
     $("#showcomments").click(function(event){
         event.preventDefault();
-
+        showFirstComments();
         //Get the number of comments. Minus 1 becuase of the submit comment form
-        var numberOfComments = $(".commentBox").length - 1;
-        $("#commentContainer").children().slice(0, 3).toggle();
-
-        if (numberOfComments > 3){
-            $("#divloadmore").toggle();
-        }
-        $("#commentsdiv").toggle();
-
-        var numberOfVisibleComments = $('.commentBox:not([style*="display: none"])').length;
-        console.log(numberOfVisibleComments);
     });
+
+    function showFirstComments(){
+        if ($("#commentsdiv").is(":visible")){
+            hideAllComments();
+        }
+        else{
+            var numberOfComments = $(".commentBox").length - 1;
+            $("#commentContainer").children().slice(0, 3).show();
+
+            if (numberOfComments > 3){
+                $("#divloadmore").show();
+            }
+
+        $("#commentsdiv").show();
+        }
+    }
+
+    function hideAllComments(){
+        $("#commentsdiv").hide();
+        $("#divloadmore").hide();
+        $("#divloadless").hide();
+        $("#commentContainer").children().hide();
+    }
 
     //Load more button
     $("#loadmore").click(function(event){
         event.preventDefault();
+        showMore();
+    })
+
+    function showMore(){
         var numberOfComments = $(".commentBox").length - 1;
-        $("#commentContainer").children().slice(3, numberOfComments).toggle();
+        $("#commentContainer").children().slice(3, numberOfComments).show();
         $("#divloadmore").hide();
         $("#divloadless").show();
-    })
+    }
 
     $("#loadless").click(function(event){
         var numberOfComments = $(".commentBox").length - 1;
         event.preventDefault();
-        $("#commentContainer").children().slice(3, numberOfComments).toggle();
+        $("#commentContainer").children().slice(3, numberOfComments).hide();
         $("#divloadless").hide();
         $("#divloadmore").show();
     })
@@ -76,6 +93,18 @@ $(document).ready(function(){
             headers: {'X-CSRFToken': csrftoken},
             data: {'text': text},
             success:function(data){
+                //append a new comment box with the new content.
+                showMore();
+                var commentClone = $("#comment").clone()
+                commentClone.attr("id", "commentclone");
+                labelContent = "<label for='comment'>Comment from: " + data.user + ":</label>";
+                $("#commentContainer").append(labelContent);
+                $("#commentContainer").append("<p>Just now</p>");
+                commentClone.appendTo("#commentContainer");
+                commentClone.attr("readonly", true);
+                commentClone.val(text);
+                $("#comment").val("");
+
             }
         });
     }
