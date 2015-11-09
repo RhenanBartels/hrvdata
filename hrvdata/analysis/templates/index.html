@@ -185,15 +185,20 @@ X comments -->
 <div style="text-align:center"><a href="" id="showcomments">Comments</a></div>
 <div id="commentContainer">
 {% for comment in  comments %}
-<div class="commentBox" style="display:none">
+<div class="commentBox" style="display:none" id="commentbox_{{ forloop.counter0 }}">
     <label for="comment">Comment from {{ comment.author.username }}:</label>
     <p> {{ comment.created_time|timesince }} ago </p>
     <!-- Only let edition and deletion if user is the author -->
     {% if comment.author.username == request.user.username %}
-        <div style="float:right;margin-top:-2em;"><a href="">Edit</a> | <a href="">Delete</a></div>
+    <div style="float:right;margin-top:-2em;"><a href="" class="commentedit"
+            id="edit_{{ forloop.counter0 }}">Edit</a> |
+        <a href="" class="deletecomment" id="delete_{{ forloop.counter0 }}">Delete</a></div>
     {% endif %}
-    <div class="form-group">
-      <textarea class="form-control" rows="3" readonly>{{ comment.text }}</textarea>
+    <div class="form-group" id="divcomment_{{ forloop.counter0 }}">
+        <textarea class="form-control" id="textarea_{{ forloop.counter0 }}" rows="3" readonly>{{ comment.text }}</textarea>
+        {% if comment.edited %}
+            <p align="right" id="p_{{ forloop.counter0 }}" style="color:#9197A3">Edited</p>
+       {% endif %}
     </div>
 </div>
 {% endfor %}

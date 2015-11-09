@@ -173,6 +173,28 @@ def change_tv_index_shared():
 
 #TODO: make a query with all comments of the current user and pass as context
 #to enable edition and deletion
+
+def comment(request, filename):
+    if request.is_ajax():
+        action_type = request.POST["action_type"]
+        user = request.user
+        rri_file = Tachogram.objects.get(owner=user, filename=filename)
+        comment_context = {"user": user.username}
+        if action_type == "create":
+            text = request.POST["text"]
+            save_comment(rri_file, text, user)
+        elif action_type == "update":
+            old_text = request.POST["old_text"]
+            new_text = request.POST["new_text"]
+            if old_text != new_text:
+                update_comment(rri_file, old_text, new_text, user)
+        elif action_type == "delete":
+            print dir(request.POST)
+            old_text = request.POST["old_text"]
+            delete_comment(rri_file, old_text, user)
+        return HttpResponse(json.dumps(comment_context),
+            content_type="application/json")
+
 def shared_comment(request, filename):
     if request.is_ajax():
         text = request.POST["text"]
@@ -185,22 +207,23 @@ def shared_comment(request, filename):
         return HttpResponse(json.dumps(comment_context),
             content_type="application/json")
 
-def comment(request, filename):
-    if request.is_ajax():
-        text = request.POST["text"]
-        user = request.user
-        rri_file = Tachogram.objects.get(owner=user, filename=filename)
-        save_comment(rri_file, text, user)
-        comment_context = {"user": user.username}
-        return HttpResponse(json.dumps(comment_context),
-            content_type="application/json")
-
 def save_comment(rri_file, text, user):
     new_comment = Comment()
     new_comment.author = user
     new_comment.signal = rri_file
     new_comment.text = text
     new_comment.save()
+
+def update_comment(rri_file, old_text, new_text, user):
+    comment = Comment.objects.get(author=user, signal=rri_file, text=old_text)
+    #TODO:Keep the date when to commen was created.
+    comment.text = new_text
+    comment.edited = True
+    comment.save()
+
+def delete_comment(rri_file, old_text, user):
+    comment = Comment.objects.get(author=user, signal=rri_file,
+            text=old_text).delete()
 
 def get_file_information(f):
     #Check if it is possible to read as a text file.

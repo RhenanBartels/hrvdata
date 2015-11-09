@@ -13,6 +13,7 @@ def index(request):
     #Form to entry the receiver's email
     share_form = ShareForm()
     #Get the files shared with this user
+    #Get if this user received any new comment
     shared_files = SharedFile.objects.filter(receiver=request.user.email)
     context = {'data': data, 'shared': shared_files, 'share_form': share_form}
     return render(request, "filelistindex.html", context)

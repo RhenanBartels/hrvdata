@@ -79,6 +79,65 @@ $(document).ready(function(){
         commentAjax(filename, text);
     })
 
+    $(".commentedit").click(function(e){
+        e.preventDefault();
+        //Show the buttons only with the edition is done
+        var nButtons = $(".buttonedit").length;
+        var id = this.id.split("_")[1];
+        var textArea = $("#textarea_" + id);
+        var divComment = $("#divcomment_" + id);
+        //Get the old text to find the comment on database
+        var oldText = textArea.val();
+
+        if (nButtons == 0){
+            //Get the element by Id
+            var buttonTemplate = "<button style='margin-right:0.1cm;margin-top:0.2cm;' class='btn btn-default btn-sm buttonedit'></button>";
+            var buttonCommentCancel = $(buttonTemplate);
+            var buttonCommentSave = $(buttonTemplate.replace("default", "primary"));
+            buttonCommentCancel.text("Cancel");
+            buttonCommentSave.text("Save");
+            textArea.removeAttr("readonly");
+            divComment.append(buttonCommentCancel);
+            divComment.append(buttonCommentSave);
+            //Bind function to each button
+            buttonCommentCancel.click(function(){
+                removeCommentEditionButtons(buttonCommentCancel, buttonCommentSave, textArea)
+            })
+            buttonCommentSave.click(function(){
+                //Ajax saving updating the text
+                var newText = textArea.val();
+                var filename = getFileName();
+                updateCommentAjax(filename, oldText, newText);
+                removeCommentEditionButtons(buttonCommentCancel, buttonCommentSave, textArea)
+                //Append tag edited to textarea.
+                var nP = $("#p_" + id).length
+                console.log(nP);
+                if (!nP){
+                    divComment.append("<p align='right' style=color:'#9197A3'>Edited</p>");
+                }
+            })
+        }else{
+            //Show a message that the user must finish the current edition
+            //before edit another comment.
+        }
+    })
+
+    $(".deletecomment").click(function(e){
+        e.preventDefault();
+        var id = this.id.split("_")[1];
+        var commentBox= $("#commentbox_" + id);
+        var textArea = $("#textarea_" + id);
+        var oldText = textArea.val()
+        var filename = getFileName();
+        deleteCommentAjax(filename, oldText, commentBox);
+    })
+
+    function removeCommentEditionButtons(buttonCommentCancel, buttonCommentSave, textArea){
+        textArea.attr("readonly", true);
+        buttonCommentCancel.remove();
+        buttonCommentSave.remove();
+    }
+
     function getFileName(){
         var url_name = window.location.pathname.split("/");
         rri_name = url_name[url_name.length - 1];
@@ -91,7 +150,7 @@ $(document).ready(function(){
             url: filename + "/comment",
             type:'post',
             headers: {'X-CSRFToken': csrftoken},
-            data: {'text': text},
+            data: {'text': text, 'action_type': 'create'},
             success:function(data){
                 //append a new comment box with the new content.
                 showMore();
@@ -105,6 +164,31 @@ $(document).ready(function(){
                 commentClone.val(text);
                 $("#comment").val("");
 
+            }
+        });
+    }
+
+    function updateCommentAjax(filename, oldText, newText){
+        var csrftoken = getCookie('csrftoken');
+        $.ajax({
+            url: filename + "/comment",
+            type:'post',
+            headers: {'X-CSRFToken': csrftoken},
+            data: {'old_text': oldText, 'new_text': newText, 'action_type': 'update'},
+            success:function(data){
+            }
+        });
+    }
+
+    function deleteCommentAjax(filename, oldText, commentBox){
+        var csrftoken = getCookie('csrftoken');
+        $.ajax({
+            url: filename + "/comment",
+            type:'post',
+            headers: {'X-CSRFToken': csrftoken},
+            data: {'old_text': oldText, 'action_type': 'delete'},
+            success:function(data){
+                commentBox.remove();
             }
         });
     }

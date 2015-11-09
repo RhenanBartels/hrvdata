@@ -26,7 +26,6 @@ $(document).ready(function (){
 
 //Change the Time Varying Settings
 $("#timevaryingsubmitsettings").click(function(){
-    console.log("oi");
     var filename = getFileName();
     var settings = getTimeVaryingSettings();
     settingsAjax(filename, settings, 'timevarying');
