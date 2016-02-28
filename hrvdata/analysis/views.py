@@ -11,8 +11,8 @@ from share.models import SharedFile
 from analysis.models import Comment
 from .forms import TachogramSettingsForm, TimeVaryingSettingsForm
 
-import hrv
-from hrvtools.hrv import TimeDomain, TimeVarying, FrequencyDomain
+from hrvtools.hrv import TimeVarying
+import hrv.hrv
 
 #TODO: use new hrv module intalled with pip. Remove hrvtools library
 #TODO: Make the comments different from shared files.
@@ -25,47 +25,53 @@ def index(request, filename):
     #Get the parameters in the database
     settings = Settings.objects.get(signal=rri_file)
     rri = get_file_information(rri_file)
-    time_domain= TimeDomain(rri)
-    frequency_domain = FrequencyDomain(rri)
+    rmssd, sdnn, pnn50, mean_rri, mean_hr =\
+            hrv.hrv.time_domain(rri)
+    psd, frequency_domain = hrv.hrv.frequency_domain(rri)
+    total_power = frequency_domain[0]
+    vlf_power = frequency_domain[1]
+    lf_power = frequency_domain[2]
+    hf_power = frequency_domain[3]
+    lfhf_power = frequency_domain[4]
+    lfnu_power = frequency_domain[5]
+    hfnu_power = frequency_domain[6]
     #TODO: Use the information from the database to calculate the indices
     segment = 256
     overlap = 128
-    frequency_domain.calculate(segment, overlap)
-    time_domain.calculate()
     #TODO: create a function to create the results context
 
     #Load comments for this file
     comments = Comment.objects.filter(signal=rri_file)
 
-    results = {'rmssd': round(time_domain.rmssd, 2),
-            'sdnn': round(time_domain.sdnn, 2),
-            'pnn50':round(time_domain.pnn50, 2),
-            'mrri':round(time_domain.rri_mean, 2),
-            'mhr': round(time_domain.hr_mean, 2),
-            "totalpower": round(frequency_domain.total_power, 2),
-            "vlf": round(frequency_domain.vlf, 2),
-            "lf": round(frequency_domain.lf,2),
-            "hf":round(frequency_domain.hf, 2),
-            "lfhf": round(frequency_domain.lfhf, 2),
-            "lfnu": round(frequency_domain.lfnu, 2),
-            "hfnu": round(frequency_domain.hfnu, 2),
+    results = {'rmssd': round(rmssd, 2),
+            'sdnn': round(sdnn, 2),
+            'pnn50':round(pnn50, 2),
+            'mrri':round(mean_rri, 2),
+            'mhr': round(mean_hr, 2),
+            "totalpower": round(total_power, 2),
+            "vlf": round(vlf_power, 2),
+            "lf": round(lf_power, 2),
+            "hf":round(hf_power, 2),
+            "lfhf": round(lfhf_power, 2),
+            "lfnu": round(lfnu_power, 2),
+            "hfnu": round(hfnu_power, 2),
             "filename": filename,
             "comments": comments,
             "tachogramsettingsform": tachogram_settings_form,
             "timevaryingsettingsform": time_varying_settings_form}
+
     if request.is_ajax():
         segment_size = settings.tv_segment_size
         overlap_size = settings.tv_overlap_size
         time_varying = TimeVarying(rri, segment_size, overlap_size)
         time_varying.calculate()
-        rri = time_domain.rri
         rri_time = time_varying.rri_time
         rri_result = zip(rri_time, rri)
         rmssdi = time_varying.rmssd
         segment_interval = time_varying.segment_interval
         rmssdi_result = zip(segment_interval, rmssdi)
-        vlf_psd, lf_psd, hf_psd = split_psd_classes(frequency_domain.fxx, frequency_domain.pxx)
-        psd = zip(frequency_domain.fxx, frequency_domain.pxx)
+        vlf_psd, lf_psd, hf_psd = split_psd_classes(psd[0], psd[1])
+        psd = zip(psd[0], psd[1])
         results = {'rri': rri_result, "rmssdi": rmssdi_result,
                 "vlfpsd": vlf_psd, "lfpsd": lf_psd, "hfpsd": hf_psd,
                 "psd": psd, "time_varying_index": "rmssd"}
@@ -119,7 +125,7 @@ def settings(request, filename):
             overlap_size = int(request.POST['overlapsize'])
             error_msg = validate_timevarying_parameters(rri, segment_size,
                     overlap_size)
-            time_varying = hrv.time_varying(rri, segment_size, overlap_size)
+            time_varying = hrv.hrv.time_varying(rri, segment_size, overlap_size)
             #Save the parameters in the databse
             settings = Settings.objects.get(signal=rri_file)
             settings.tv_segment_size = segment_size
@@ -138,8 +144,8 @@ def shared(request, filename):
     rri_file = Tachogram.objects.get(owner=owner, filename=filename)
     comments = Comment.objects.filter(signal=rri_file)
     rri = get_file_information(rri_file)
-    time_domain = hrv.time_domain(rri)
-    frequency_domain = hrv.frequency_domain(rri)
+    time_domain = hrv.hrv.time_domain(rri)
+    frequency_domain = hrv.hrv.frequency_domain(rri)
     results = {'rmssd': round(time_domain[0], 2),
             'sdnn': round(time_domain[1], 2),
             'pnn50':round(time_domain[2], 2),
@@ -155,9 +161,9 @@ def shared(request, filename):
             "filename": filename,
             "comments": comments}
     if request.is_ajax():
-        time_rri = hrv._create_time_array(rri)
+        time_rri = hrv.hrv._create_time_array(rri)
         rri_result = zip(time_rri, rri)
-        time_varying = hrv.time_varying(rri)
+        time_varying = hrv.hrv.time_varying(rri)
         rmssdi_result = zip(time_varying[0], time_varying[1])
         fxx, pxx = frequency_domain[0]
         psd = zip(fxx, pxx)

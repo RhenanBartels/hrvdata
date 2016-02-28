@@ -2,4 +2,7 @@ dev.db
 *.pyc
 *.DS_Store
 *.txt
-;
+MANIFEST
+.directory
+.tox
+.env
