@@ -1,7 +1,7 @@
 from django import forms
 from django.core.exceptions import ValidationError
 
-import hrv
+import hrv.hrv as hrv
 
 class FileForm(forms.Form):
     rri_data = forms.FileField()

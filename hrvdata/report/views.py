@@ -14,7 +14,7 @@ from reportlab.lib.units import cm, mm, inch, pica
 from upload.models import Tachogram
 from analysis.views import get_file_information
 
-import hrv
+import hrv.hrv as hrv
 
 def index(request, filename):
     metadata = {'username':request.user, 'filename': filename, "date":

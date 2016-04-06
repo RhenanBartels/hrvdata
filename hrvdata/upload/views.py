@@ -3,7 +3,9 @@ from django.shortcuts import render, redirect
 from .forms import FileForm, read_rri_from_django
 from .models import Tachogram, Settings
 
-import hrv
+import hrv.hrv as hrv
+
+
 #TODO: check type of uploaded and save it to database. When clicked in filelist
 #will be easier to open file.
 def index(request):

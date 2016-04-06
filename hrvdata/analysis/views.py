@@ -2,6 +2,7 @@ import json
 
 import numpy as np
 
+from django.conf import settings
 from django.shortcuts import render
 from django.http import HttpResponse
 from django.contrib.auth.models import User
