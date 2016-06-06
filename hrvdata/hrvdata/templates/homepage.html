@@ -14,10 +14,14 @@
             <h1>{% blocktrans %}Welcome to HRVData{% endblocktrans %}</h1>
             <p>
                 {% blocktrans %}
-                In addition to what is provided by the "zero" project, this project
-                provides thorough integration with django-user-accounts, adding
-                comprehensive account management functionality. It is a foundation
-                suitable for most sites that have user accounts.
+                 HRVData is a new project that allows researches to stores and
+                 analyze <a target="_blank" href="http://circ.ahajournals.org/content/93/5/1043.full">
+                     Heart Rate Variability</a> data everywhere.
+                 <p>This version offers Time Domain, Frequency Domain and
+                 <a target="_blank" href="http://ajpheart.physiology.org/content/290/6/H2446">
+                     Time Varying</a> methods. Much more will be available in the future.</p>
+                 <p>Good Research!</p>
+
                 {% endblocktrans %}
                 </p>
             {% url "account_login" as login_url %}
@@ -29,8 +33,7 @@
         <div class="container">
             <p class="lead text-center">
                 {% blocktrans %}
-                See <a href="http://pinaxproject.com/">pinaxproject.com</a>
-                for more information.
+                See the project's source code <a target="_blank" href="http://github.com/rhenanbartels/hrvdata">here</a>
                 {% endblocktrans %}
             </p>
         </div>
